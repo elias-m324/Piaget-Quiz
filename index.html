@@ -73,7 +73,7 @@ table{width:100%;border-collapse:collapse}td,th{padding:8px;border-bottom:1px so
   <div class="card">
     <span class="tag">Spieler</span>
     <h2 style="margin-top:10px">Wer baut hier gerade seine Schemata um?</h2>
-    <input type="text" id="pname" maxlength="20" placeholder="Dein Spielername" autocomplete="nickname">
+    <input type="text" id="pname" maxlength="20" placeholder="Dein Spielername (kein Klarname)" autocomplete="nickname">
     <button class="btn" onclick="startName()">Weiter</button>
   </div>
 </section>
@@ -83,7 +83,7 @@ table{width:100%;border-collapse:collapse}td,th{padding:8px;border-bottom:1px so
   <div class="card">
     <span class="tag">Kurz vorgestellt</span>
     <h2 style="margin-top:10px">Jean Piaget (1896–1980)</h2>
-    <div class="imgph" id="portrait">📷 Hier kannst du später ein Bild von Piaget einfügen<br><small>(Tipp: &lt;img src="piaget.jpg"&gt; statt dieses Textes)</small></div>
+    <div class="imgph" id="portrait">&lt;<img src="https://www1.wdr.de/stichtag/stichtag_august116~_v-gseapremiumxl.jpg" alt="Bild kann gerade nicht geladen werden!!"></small></div>
     <p>Der Schweizer Psychologe erforschte, wie Kinder ihr Denken aufbauen. Sein Kerngedanke: Kinder sind <b>aktive Konstrukteure</b> ihrer Wirklichkeit. Sie lernen, indem sie handeln, ausprobieren und ihre Vorstellungen immer wieder umbauen.</p>
     <p>Gleich testest du, ob dein eigenes Schema dafür schon sitzt. 15 Fragen, 15 Punkte. 🧠</p>
     <button class="btn" onclick="startQuiz()">Quiz starten</button>
@@ -137,7 +137,7 @@ const $=id=>document.getElementById(id);
 function go(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('on'));$(id).classList.add('on');window.scrollTo(0,0)}
 
 // Intro: Bausteine stapeln sich (Schemata aufbauen)
-(function(){const cols=['#e8553d','#2f6fb5','#f2b632','#2e9e5b','#8a5cc2','#e8553d'],ch=['S','A','Ä','K','P','I'],pos=[[0,126],[68,126],[136,126],[34,60],[102,60],[68,-6]];
+(function(){const cols=['#e8553d','#2f6fb5','#f2b632','#2e9e5b','#8a5cc2','#e8553d'],ch=['N','E','N','E','R','L'],pos=[[0,126],[68,126],[136,126],[34,60],[102,60],[68,-6]];
  $('stack').innerHTML=pos.map((p,k)=>`<div class="blk" style="left:${p[0]}px;top:${p[1]}px;background:${cols[k]};animation-delay:${k*.35}s">${ch[k]}</div>`).join('')})();
 setTimeout(()=>{if($('intro').classList.contains('on'))$('intro').querySelector('.btn').focus()},3500);
 
