@@ -204,7 +204,7 @@ function next(){i++;i<N?show():scene(2)}
 
 function scene(n){
  go('scene');const one=n===1;
- $('scenebox').innerHTML=`<div class="stage"><span class="sun">☀️</span><span class="cloud" style="animation-delay:-4s">☁️</span><span class="cloud" style="top:56px;animation-duration:22s;animation-delay:-13s">☁️</span><span class="e mom">👩</span><span class="e kid">🧒</span>${one?'<span class="point">👉</span>':'<span class="point idea">💡</span>'}<span class="e trac">🚜</span><div class="bubble">${one?'„Mama, Bagger, Bagger!“':'„Mama, das ist ein gar kein richtiger Bagger!“'}</div></div><p style="text-align:center;margin:0"><button class="btn fade" style="animation-delay:6.2s" onclick="${one?"go('piaget')":'result()'}">${one?'Weiter':'Ergebnis zeigen 🎉'}</button></p>`;
+ $('scenebox').innerHTML=`<div class="stage"><span class="sun">☀️</span><span class="cloud" style="animation-delay:-4s">☁️</span><span class="cloud" style="top:56px;animation-duration:22s;animation-delay:-13s">☁️</span><span class="e mom">👩</span><span class="e kid">🧒</span>${one?'<span class="point">👉</span>':'<span class="point idea">💡</span>'}<span class="e trac">🚜</span><div class="bubble">${one?'„Mama, Bagger, Bagger!“':'„Mama, das ist eigentlich gar kein richtiger Bagger!“'}</div></div><p style="text-align:center;margin:0"><button class="btn fade" style="animation-delay:6.2s" onclick="${one?"go('piaget')":'result()'}">${one?'Weiter':'Ergebnis zeigen 🎉'}</button></p>`;
 }
 function result(){
  go('result');$('rscore').textContent=score+' / '+N;
