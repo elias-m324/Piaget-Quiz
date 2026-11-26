@@ -55,23 +55,38 @@ select{font:inherit;width:100%;padding:8px;border-radius:8px;border:2px solid va
 .score{font:700 4rem Georgia,serif;text-align:center;color:var(--a)}
 table{width:100%;border-collapse:collapse}td,th{padding:8px;border-bottom:1px solid var(--line);text-align:left}
 .me td{font-weight:700;background:var(--okbg)}
-.stars{display:flex;flex-wrap:wrap;gap:2px;margin:2px 0 14px}
-.stars button{font-size:1.7rem;line-height:1;background:none;border:0;padding:2px 3px;cursor:pointer;color:#cfc3a5;transition:transform .1s}
-.stars button:hover{transform:scale(1.25)}.stars button.on{color:var(--c);text-shadow:0 0 0 var(--ink),1px 1px 0 var(--ink)}
-.rl{display:flex;justify-content:space-between;font-weight:700;margin-top:10px}
-textarea{font:inherit;width:100%;min-height:90px;padding:12px 14px;border:2px solid var(--ink);border-radius:12px;background:#fff;color:#2b2a33;resize:vertical;margin-bottom:8px}
-.err{color:var(--bad);min-height:1.4em;font-weight:700;margin-bottom:8px}
-.rank{text-align:center;font-weight:700;font-size:1.1rem;margin:12px 0}
-.btns{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
+.extra{margin:18px 0}.extra:empty{display:none}.extra iframe{max-width:100%;border:0;border-radius:12px}
+.gears{display:flex;align-items:flex-end;justify-content:center;gap:6px;position:relative;z-index:1}
+.gears span{font-size:3rem;margin-bottom:46px;opacity:0;animation:in 1s 1.6s forwards}
+.gears .g1 i,.gears .g2 i{display:inline-block;font-style:normal;animation:spin 6s linear infinite}.gears .g2 i{animation-direction:reverse}
+@keyframes spin{to{transform:rotate(360deg)}}
+.floaters{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:0}
+.floaters span{position:absolute;bottom:-50px;font-size:1.8rem;opacity:0;animation:rise 9s linear infinite}
+@keyframes rise{0%{transform:translateY(0) rotate(0);opacity:0}15%{opacity:.7}100%{transform:translateY(-115vh) rotate(40deg);opacity:0}}
+#intro>*:not(.floaters){position:relative;z-index:1}
+#intro h1 span{display:inline-block;opacity:0;animation:in .6s forwards}
+.stage{position:relative;height:230px;overflow:hidden;border:2px solid var(--ink);border-radius:14px;background:linear-gradient(#bfe3ff 0 68%,#8fcf6b 68%);color:#2b2a33;margin-bottom:18px}
+.stage .sun{position:absolute;right:14px;top:10px;font-size:2.4rem}
+.stage .cloud{position:absolute;top:16px;font-size:2.2rem;animation:cloud 16s linear infinite}
+@keyframes cloud{from{left:-60px}to{left:105%}}
+.stage .e{position:absolute;bottom:30px;line-height:1}
+.mom{left:6%;font-size:3.6rem}.kid{left:24%;font-size:2.5rem}
+.stage .point{position:absolute;bottom:40px;left:33%;font-size:1.8rem;opacity:0;animation:pop .4s 1.3s forwards}
+.stage .point.idea{left:25%;bottom:92px}
+.trac{right:5%;font-size:4.6rem;animation:drive 3.4s 2.6s ease-in-out 1}
+@keyframes drive{0%{transform:translateX(0)}22%{transform:translateX(-45px) translateY(-4px)}45%{transform:translateX(-120px)}55%{transform:translateX(-120px) translateY(-4px)}100%{transform:translateX(0)}}
+.bubble{position:absolute;top:16px;left:5%;max-width:62%;background:#fff;border:2px solid #2b2a33;border-radius:14px;padding:8px 12px;font-weight:700;opacity:0;animation:pop .5s 1.4s cubic-bezier(.3,1.5,.5,1) forwards;transform-origin:20% 100%}
+@keyframes pop{from{opacity:0;transform:scale(.3)}to{opacity:1;transform:none}}
 </style>
 </head>
 <body>
 
 <!-- INTRO -->
 <section id="intro" class="screen on">
-  <div class="stack" id="stack"></div>
+  <div class="floaters" id="fl"></div>
+  <div class="gears"><span class="g1"><i>⚙️</i></span><div class="stack" id="stack"></div><span class="g2"><i>⚙️</i></span></div>
   <svg class="spiral" width="120" height="120" viewBox="0 0 120 120" style="margin:-6px auto 8px;display:block"><path d="M60 60 q6-8 14-2 q8 10-4 22 q-18 14-36-2 q-20-24 6-46 q30-22 62 4 q30 34-4 66" fill="none" stroke="#e8553d" stroke-width="4" stroke-linecap="round"/></svg>
-  <h1 class="fade" style="animation-delay:2.2s">Wie Kinder<br>denken lernen</h1>
+  <h1 id="ititle"></h1>
   <p class="fade" style="animation-delay:2.8s;color:var(--mute)">Das Piaget-Quiz</p>
   <button class="btn fade" style="animation-delay:3.3s" onclick="go('name')">Los geht’s 🧱</button>
 </section>
@@ -81,7 +96,7 @@ textarea{font:inherit;width:100%;min-height:90px;padding:12px 14px;border:2px so
   <div class="card">
     <span class="tag">Spieler</span>
     <h2 style="margin-top:10px">Wer baut hier gerade seine Schemata um?</h2>
-    <input type="text" id="pname" maxlength="20" placeholder="Dein Spielername (kein Klarname)" autocomplete="nickname">
+    <input type="text" id="pname" maxlength="20" placeholder="Dein Spielername" autocomplete="nickname">
     <button class="btn" onclick="startName()">Weiter</button>
   </div>
 </section>
@@ -104,19 +119,8 @@ textarea{font:inherit;width:100%;min-height:90px;padding:12px 14px;border:2px so
   <div class="card" id="qcard"></div>
 </section>
 
-<!-- FEEDBACK -->
-<section id="feedback" class="screen">
-  <div class="card">
-    <span class="tag">Feedback</span>
-    <h2 style="margin-top:10px">Wie fandest du das Quiz?</h2>
-    <p style="color:var(--mute)">Bevor dein Ergebnis kommt: Bitte bewerte beides und schreib einen kurzen Kommentar. Alles ist Pflicht.</p>
-    <div class="rl"><span>📚 Inhalt</span><span id="scv">–</span></div><div class="stars" id="sc"></div>
-    <div class="rl"><span>🎨 Design &amp; Bedienung</span><span id="sdv">–</span></div><div class="stars" id="sd"></div>
-    <textarea id="fcom" maxlength="1000" placeholder="Dein Kommentar …"></textarea>
-    <div class="err" id="ferr"></div>
-    <button class="btn" id="fsend" onclick="sendFeedback()">Absenden &amp; Ergebnis zeigen</button>
-  </div>
-</section>
+<!-- ZWISCHENANIMATION -->
+<section id="scene" class="screen"><div class="card" id="scenebox"></div></section>
 
 <!-- RESULT -->
 <section id="result" class="screen">
@@ -125,16 +129,8 @@ textarea{font:inherit;width:100%;min-height:90px;padding:12px 14px;border:2px so
     <div class="score" id="rscore"></div>
     <h2 id="rtitle" style="text-align:center"></h2>
     <p id="rtext" style="text-align:center;color:var(--mute)"></p>
-    <h3 style="margin-top:22px">🏆 Die Top 5</h3>
-    <div id="leaderboard">
-      <table id="lbtable"></table>
-      <div class="rank" id="myrank"></div>
-      <p class="legend" id="lbnote"></p>
-    </div>
-    <div class="btns">
-      <button class="btn alt" onclick="loadBoard()">🔄 Rangliste aktualisieren</button>
-      <button class="btn" onclick="startQuiz()">Nochmal spielen 🔁</button>
-    </div>
+    <div class="extra" id="extra"><!-- Hier später z. B. <iframe src="https://..." style="width:100%;height:400px"></iframe> einfügen. Bleibt dieser Bereich leer, ist er auf der Seite unsichtbar. --></div>
+    <button class="btn" onclick="startQuiz()">Nochmal spielen 🔁</button>
   </div>
 </section>
 
@@ -163,9 +159,11 @@ function go(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remo
 // Intro: Bausteine stapeln sich (Schemata aufbauen)
 (function(){const cols=['#e8553d','#2f6fb5','#f2b632','#2e9e5b','#8a5cc2','#e8553d'],ch=['N','E','N','E','R','L'],pos=[[0,126],[68,126],[136,126],[34,60],[102,60],[68,-6]];
  $('stack').innerHTML=pos.map((p,k)=>`<div class="blk" style="left:${p[0]}px;top:${p[1]}px;background:${cols[k]};animation-delay:${k*.35}s">${ch[k]}</div>`).join('')})();
-setTimeout(()=>{if($('intro').classList.contains('on'))$('intro').querySelector('.btn').focus()},3500);
+// Intro: Titel Buchstabe für Buchstabe, schwebende Symbole
+(function(){const t='Wie Kinder|denken lernen';let d=2.2,h='';for(const c of t){if(c==='|'){h+='<br>';continue}h+=c===' '?' ':`<span style="animation-delay:${(d+=.05).toFixed(2)}s">${c}</span>`}$('ititle').innerHTML=h;
+ const em=['🧩','🧠','💡','⚖️','🧱','🔍','🌀'];$('fl').innerHTML=em.map((e,k)=>`<span style="left:${8+k*13}%;animation-delay:${(k*1.3).toFixed(1)}s;animation-duration:${8+k%3*2}s">${e}</span>`).join('')})();
 
-function startName(){const v=$('pname').value.trim();if(!v){$('pname').focus();return}player=v;go('piaget')}
+function startName(){const v=$('pname').value.trim();if(!v){$('pname').focus();return}player=v;scene(1)}
 $('pname').addEventListener('keydown',e=>{if(e.key==='Enter')startName()});
 function startQuiz(){if(!player){go('name');return}i=0;score=0;show()}
 
@@ -202,77 +200,17 @@ function checkMatch(){
 function checkSlider(){
  const r=$('sr'),ok=+r.value<=15;r.disabled=true;$('sv').style.color=ok?'var(--ok)':'var(--bad)';$('chk').remove();fin(ok);
 }
-function next(){i++;i<N?show():(fbDone?result():(go('feedback')))}
+function next(){i++;i<N?show():scene(2)}
 
-let fbDone=false,rS={sc:0,sd:0};
-const esc=t=>String(t).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-['sc','sd'].forEach(id=>{$(id).innerHTML=Array.from({length:10},(_,k)=>`<button type="button" aria-label="${k+1} Sterne" onclick="rate('${id}',${k+1})">★</button>`).join('')});
-function rate(id,v){rS[id]=v;[...$(id).children].forEach((b,k)=>b.classList.toggle('on',k<v));$(id+'v').textContent=v+' / 10'}
-async function sendFeedback(){
- const cm=$('fcom').value.trim(),err=$('ferr'),b=$('fsend');
- if(!rS.sc||!rS.sd||!cm){err.textContent='Bitte beide Bewertungen anklicken und einen Kommentar schreiben.';return}
- err.textContent='';b.disabled=true;b.textContent='Wird gesendet …';
- try{
-  if(window.fbApi)await window.fbApi.save({name:player,points:score,content:rS.sc,design:rS.sd,comment:cm});
-  fbDone=true;b.disabled=false;b.textContent='Absenden & Ergebnis zeigen';result();
- }catch(e){console.error(e);err.textContent='Senden hat nicht geklappt. Bitte versuche es nochmal.';b.disabled=false;b.textContent='Absenden & Ergebnis zeigen'}
-}
-async function loadBoard(){
- const t=$('lbtable'),r=$('myrank'),n=$('lbnote');
- t.innerHTML='<tr><td>Rangliste wird geladen …</td></tr>';r.textContent='';n.textContent='';
- try{
-  if(!window.fbApi||!window.fbApi.ok)throw new Error('nofb');
-  const [top,rank]=await Promise.all([window.fbApi.top(),window.fbApi.rank(score)]);
-  t.innerHTML='<tr><th>#</th><th>Name</th><th>Punkte</th></tr>'+top.map((p,k)=>`<tr><td>${k+1}</td><td>${esc(p.name)}</td><td>${p.points}</td></tr>`).join('');
-  r.textContent=`Dein Platz: ${rank} (${score} Punkte)`;
- }catch(e){
-  t.innerHTML=`<tr class="me"><td>–</td><td>${esc(player)} (du)</td><td>${score}</td></tr>`;
-  n.textContent=(e.message==='nofb')?'Die Online-Rangliste ist noch nicht verbunden (Firebase-Zugangsdaten fehlen).':'Die Rangliste konnte nicht geladen werden. Probiere „Aktualisieren“.';
- }
+function scene(n){
+ go('scene');const one=n===1;
+ $('scenebox').innerHTML=`<div class="stage"><span class="sun">☀️</span><span class="cloud" style="animation-delay:-4s">☁️</span><span class="cloud" style="top:56px;animation-duration:22s;animation-delay:-13s">☁️</span><span class="e mom">👩</span><span class="e kid">🧒</span>${one?'<span class="point">👉</span>':'<span class="point idea">💡</span>'}<span class="e trac">🚜</span><div class="bubble">${one?'„Mama, Bagger, Bagger!“':'„Mama, das ist ein gar kein richtiger Bagger!“'}</div></div><p style="text-align:center;margin:0"><button class="btn fade" style="animation-delay:6.2s" onclick="${one?"go('piaget')":'result()'}">${one?'Weiter':'Ergebnis zeigen 🎉'}</button></p>`;
 }
 function result(){
  go('result');$('rscore').textContent=score+' / '+N;
  const t=score>=14?['Piaget-Profi 🎓','Du denkst wie ein echter Konstruktivist: Dein Schema sitzt.']:score>=10?['Fast im Gleichgewicht ⚖️','Solide! Ein bisschen Akkommodation, dann passt alles.']:score>=6?['Mitten im Konflikt 🌀','Dein Schema wackelt noch. Genau da entsteht Lernen.']:['Frisch im Ungleichgewicht 🧱','Kein Problem: Jetzt kannst du dein Wissen neu aufbauen.'];
  $('rtitle').textContent=t[0];$('rtext').textContent=t[1];
- loadBoard();
 }
-</script>
-<script type="module">
-/* FIREBASE: Trage hier die Werte aus Firebase (Projekteinstellungen → Web-App) ein.
-   Firestore-Regeln (Firebase Console → Firestore → Regeln):
-
-   rules_version = '2';
-   service cloud.firestore { match /databases/{db}/documents {
-     match /scores/{id} {
-       allow read: if true;
-       allow create: if request.resource.data.keys().hasOnly(['name','points','createdAt'])
-         && request.resource.data.name is string && request.resource.data.name.size() > 0 && request.resource.data.name.size() <= 20
-         && request.resource.data.points is int && request.resource.data.points >= 0 && request.resource.data.points <= 15;
-       allow update, delete: if false;
-     }
-     match /feedback/{id} {
-       allow read, update, delete: if false;   // nur du siehst es in der Console
-       allow create: if request.resource.data.keys().hasOnly(['scoreId','name','points','content','design','comment','createdAt'])
-         && request.resource.data.content is int && request.resource.data.content >= 1 && request.resource.data.content <= 10
-         && request.resource.data.design is int && request.resource.data.design >= 1 && request.resource.data.design <= 10
-         && request.resource.data.comment is string && request.resource.data.comment.size() > 0 && request.resource.data.comment.size() <= 1000;
-     }
-   }}
-*/
-import {initializeApp} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import {getFirestore,collection,addDoc,getDocs,query,orderBy,limit,where,getCountFromServer,serverTimestamp} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-const cfg={apiKey:"DEIN_API_KEY",authDomain:"DEIN_PROJEKT.firebaseapp.com",projectId:"DEIN_PROJEKT_ID",storageBucket:"DEIN_PROJEKT.appspot.com",messagingSenderId:"DEINE_SENDER_ID",appId:"DEINE_APP_ID"};
-const ok=!cfg.apiKey.startsWith("DEIN");
-const db=ok?getFirestore(initializeApp(cfg)):null;
-window.fbApi={ok,
- async save(d){
-  if(!ok)return;
-  const ref=await addDoc(collection(db,'scores'),{name:d.name,points:d.points,createdAt:serverTimestamp()});
-  await addDoc(collection(db,'feedback'),{scoreId:ref.id,name:d.name,points:d.points,content:d.content,design:d.design,comment:d.comment,createdAt:serverTimestamp()});
- },
- async top(){const s=await getDocs(query(collection(db,'scores'),orderBy('points','desc'),limit(5)));return s.docs.map(x=>x.data())},
- async rank(p){const c=await getCountFromServer(query(collection(db,'scores'),where('points','>',p)));return c.data().count+1}
-};
 </script>
 </body>
 </html>
