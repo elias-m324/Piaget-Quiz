@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Wie Kinder denken lernen – Das Piaget-Quiz</title>
+<style>
+:root{--bg:#fbf3e4;--card:#fffaf0;--ink:#2b2a33;--mute:#6d6a76;--line:#e6d9bd;--a:#e8553d;--b:#2f6fb5;--c:#f2b632;--ok:#2e9e5b;--okbg:#d9f3e2;--bad:#d64545;--badbg:#fbdcdc;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#1e1c26;--card:#2a2733;--ink:#f4efe3;--mute:#a9a4b5;--line:#403b4f;--okbg:#1d4a31;--badbg:#5a2626}}
+*{box-sizing:border-box}html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;min-height:100vh;background:var(--bg);color:var(--ink);font-family:"Trebuchet MS","Segoe UI",system-ui,sans-serif;line-height:1.5;background-image:radial-gradient(var(--line) 1.2px,transparent 1.2px);background-size:26px 26px}
+h1,h2,h3{font-family:Georgia,"Times New Roman",serif;line-height:1.2;margin:0 0 .6rem}
+.screen{display:none;max-width:720px;margin:0 auto;padding:22px 18px 60px;animation:in .5s ease}
+.screen.on{display:block}
+@keyframes in{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.card{background:var(--card);border:2px solid var(--ink);border-radius:18px;padding:22px;box-shadow:6px 6px 0 var(--ink)}
+.btn{font:inherit;font-weight:700;background:var(--a);color:#fff;border:2px solid var(--ink);border-radius:12px;padding:12px 24px;cursor:pointer;box-shadow:3px 3px 0 var(--ink);transition:transform .1s}
+.btn:hover{transform:translate(-1px,-1px)}.btn:active{transform:translate(2px,2px);box-shadow:none}
+.btn.alt{background:var(--c);color:#2b2a33}
+/* intro */
+#intro{text-align:center;padding-top:6vh}
+.stack{position:relative;height:190px;width:200px;margin:0 auto 10px}
+.blk{position:absolute;width:64px;height:64px;border:2px solid var(--ink);border-radius:8px;display:grid;place-items:center;font:700 26px Georgia,serif;color:#fff;opacity:0;animation:drop .7s cubic-bezier(.3,1.4,.5,1) forwards}
+@keyframes drop{from{opacity:0;transform:translateY(-260px) rotate(-30deg)}to{opacity:1;transform:none}}
+.spiral path{stroke-dasharray:900;stroke-dashoffset:900;animation:draw 3s .6s ease forwards}
+@keyframes draw{to{stroke-dashoffset:0}}
+.fade{opacity:0;animation:in 1s forwards}
+#intro h1{font-size:clamp(2rem,7vw,3.2rem)}
+/* name / piaget */
+input[type=text]{font:inherit;width:100%;padding:12px 14px;border:2px solid var(--ink);border-radius:12px;background:#fff;color:#2b2a33;margin:10px 0 16px}
+.imgph{border:3px dashed var(--mute);border-radius:14px;min-height:190px;display:grid;place-items:center;color:var(--mute);text-align:center;padding:12px;margin:10px 0 14px}
+.imgph img{max-width:100%;border-radius:10px}
+.tag{display:inline-block;background:var(--c);color:#2b2a33;font-weight:700;font-size:.8rem;padding:3px 10px;border-radius:99px;border:2px solid var(--ink)}
+/* quiz */
+.top{display:flex;align-items:center;gap:12px;margin-bottom:14px;font-weight:700}
+.bar{flex:1;height:14px;border:2px solid var(--ink);border-radius:99px;background:var(--card);overflow:hidden}
+.bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--b),var(--a));transition:width .5s}
+.qemoji{font-size:2.2rem;float:right;margin-left:10px}
+.opt{display:block;width:100%;text-align:left;font:inherit;color:var(--ink);background:var(--card);border:2px solid var(--ink);border-radius:12px;padding:12px 14px;margin:10px 0;cursor:pointer;transition:transform .1s}
+.opt:hover:not(:disabled){transform:translateX(4px);background:var(--bg)}
+.opt b{display:inline-block;width:1.6em;color:var(--b)}
+.opt.ok{background:var(--okbg);border-color:var(--ok)}.opt.bad{background:var(--badbg);border-color:var(--bad)}
+.opt:disabled{cursor:default}
+.expl{margin-top:16px;padding:14px;border-left:6px solid var(--b);background:var(--bg);border-radius:8px;animation:in .4s}
+.verdict{font-weight:700;margin-bottom:4px}
+.mrow{display:grid;grid-template-columns:1fr 1.6fr;gap:10px;align-items:center;margin:8px 0;padding:8px;border:2px solid var(--line);border-radius:10px}
+.mrow.ok{background:var(--okbg);border-color:var(--ok)}.mrow.bad{background:var(--badbg);border-color:var(--bad)}
+select{font:inherit;width:100%;padding:8px;border-radius:8px;border:2px solid var(--ink);background:#fff;color:#2b2a33}
+@media(max-width:520px){.mrow{grid-template-columns:1fr}}
+.sl{margin:22px 0 8px}.sl input{width:100%;accent-color:var(--a)}
+.sl div{display:flex;justify-content:space-between;font-size:.85rem;color:var(--mute)}
+.val{text-align:center;font:700 2rem Georgia,serif}
+.legend{font-size:.82rem;color:var(--mute);margin:6px 0}
+/* result */
+.score{font:700 4rem Georgia,serif;text-align:center;color:var(--a)}
+table{width:100%;border-collapse:collapse}td,th{padding:8px;border-bottom:1px solid var(--line);text-align:left}
+.me td{font-weight:700;background:var(--okbg)}
+</style>
+</head>
+<body>
+
+<!-- INTRO -->
+<section id="intro" class="screen on">
+  <div class="stack" id="stack"></div>
+  <svg class="spiral" width="120" height="120" viewBox="0 0 120 120" style="margin:-6px auto 8px;display:block"><path d="M60 60 q6-8 14-2 q8 10-4 22 q-18 14-36-2 q-20-24 6-46 q30-22 62 4 q30 34-4 66" fill="none" stroke="#e8553d" stroke-width="4" stroke-linecap="round"/></svg>
+  <h1 class="fade" style="animation-delay:2.2s">Wie Kinder<br>denken lernen</h1>
+  <p class="fade" style="animation-delay:2.8s;color:var(--mute)">Das Piaget-Quiz</p>
+  <button class="btn fade" style="animation-delay:3.3s" onclick="go('name')">Los geht’s 🧱</button>
+</section>
+
+<!-- NAME -->
+<section id="name" class="screen">
+  <div class="card">
+    <span class="tag">Spieler</span>
+    <h2 style="margin-top:10px">Wer baut hier gerade seine Schemata um?</h2>
+    <input type="text" id="pname" maxlength="20" placeholder="Dein Spielername" autocomplete="nickname">
+    <button class="btn" onclick="startName()">Weiter</button>
+  </div>
+</section>
+
+<!-- PIAGET -->
+<section id="piaget" class="screen">
+  <div class="card">
+    <span class="tag">Kurz vorgestellt</span>
+    <h2 style="margin-top:10px">Jean Piaget (1896–1980)</h2>
+    <div class="imgph" id="portrait">📷 Hier kannst du später ein Bild von Piaget einfügen<br><small>(Tipp: &lt;img src="piaget.jpg"&gt; statt dieses Textes)</small></div>
+    <p>Der Schweizer Psychologe erforschte, wie Kinder ihr Denken aufbauen. Sein Kerngedanke: Kinder sind <b>aktive Konstrukteure</b> ihrer Wirklichkeit. Sie lernen, indem sie handeln, ausprobieren und ihre Vorstellungen immer wieder umbauen.</p>
+    <p>Gleich testest du, ob dein eigenes Schema dafür schon sitzt. 15 Fragen, 15 Punkte. 🧠</p>
+    <button class="btn" onclick="startQuiz()">Quiz starten</button>
+  </div>
+</section>
+
+<!-- QUIZ -->
+<section id="quiz" class="screen">
+  <div class="top"><span id="qn">1/15</span><div class="bar"><i id="pb"></i></div><span id="pts">⭐ 0</span></div>
+  <div class="card" id="qcard"></div>
+</section>
+
+<!-- RESULT -->
+<section id="result" class="screen">
+  <div class="card">
+    <span class="tag">Auswertung</span>
+    <div class="score" id="rscore"></div>
+    <h2 id="rtitle" style="text-align:center"></h2>
+    <p id="rtext" style="text-align:center;color:var(--mute)"></p>
+    <h3 style="margin-top:22px">🏆 Rangliste</h3>
+    <div id="leaderboard">
+      <!-- SPÄTER: Online-Rangliste hier einbinden (Server-Anbindung).
+           Die Funktion submitScore(name, score) in der JS-Datei ist dafür vorbereitet. -->
+      <table id="lbtable"></table>
+      <p class="legend">Der Online-Vergleich mit anderen Spielern folgt. Bis dahin siehst du nur dein Ergebnis.</p>
+    </div>
+    <button class="btn" onclick="startQuiz()">Nochmal spielen 🔁</button>
+  </div>
+</section>
+
+<script>
+const Q=[
+{e:'🐕',tag:'Assimilation & Akkommodation',q:'Ein Kind kennt Hunde als große Tiere, die bellen und mit dem Schwanz wedeln. Es begegnet (1) einem gefleckten Dalmatiner, der anders aussieht, sich aber nicht in wesentlichen Eigenschaften unterscheidet, und (2) einem kleinen, bissigen Hund. Welche Zuordnung stimmt?',o:['(1) Akkommodation, weil der Hund anders aussieht – (2) Assimilation, weil es trotzdem ein Hund ist','(1) Assimilation – (2) Akkommodation','(1) und (2) Assimilation, weil das Kind in beiden Fällen „Wauwau“ ruft'],c:1,x:'Der Dalmatiner wird in das vorhandene Schema integriert. Der kleine, bissige Hund unterscheidet sich in einer wesentlichen Eigenschaft, daher wird das Schema angepasst.'},
+{e:'🐈',tag:'Kognitiver Konflikt',q:'Ein Kind kennt nur Hunde („Tiere mit vier Beinen und Fell sind Hunde“). Es sieht erstmals eine Katze und ruft „Hund!“. Wann entsteht hier der kognitive Konflikt?',o:['Immer dann, wenn das Kind etwas Neues erlebt, also beim ersten Anblick jedes unbekannten Tieres','Wenn das Kind nach mehreren Begegnungen ein neues Schema für Katzen entwickelt hat','Wenn das Kind eine Erfahrung mit seinem bisherigen Schema nicht stimmig deuten kann: Das Tier sieht Hunden ähnlich, wird aber anders bezeichnet, und das Kind ist verwirrt'],c:2,x:'Der Konflikt ist die Diskrepanz zwischen dem, was das Kind sieht, und dem, was es deutet. Das neue Schema ist die Bewältigung des Konflikts, nicht der Konflikt selbst.'},
+{e:'💧',tag:'Internalisierung',q:'Welches Beispiel beschreibt Internalisierung?',o:['Ein Kind musste früher Dinge tatsächlich ausprobieren, um zu merken, dass man Wasser nicht greifen kann. Später kann es solche Handlungen gedanklich nachvollziehen, ohne sie auszuführen.','Ein Kind hört von der Mutter das Wort „Katze“ und sagt es auswendig nach.','Ein Kind wendet sein Greifschema auf immer mehr Gegenstände an.'],c:0,x:'Was zunächst durch konkretes Handeln geschieht, wird später gedanklich vollzogen. Antwort c beschreibt generalisierte Assimilation, Antwort b bloßes Übernehmen.'},
+{e:'⚖️',tag:'Äquilibration',q:'Welche Aussage beschreibt die Äquilibration am treffendsten?',o:['Ein Prozess, bei dem neue Erfahrungen in bestehende Schemata eingeordnet werden, ohne diese grundlegend zu verändern','Der Zustand, in dem ein Kind verwirrt ist, weil eine Erfahrung nicht zu seinen Vorstellungen passt','Der übergeordnete Anpassungsprozess, bei dem durch das Zusammenspiel von Assimilation und Akkommodation ein neues Gleichgewicht hergestellt wird'],c:2,x:'Antwort a ist die Assimilation, Antwort b der kognitive Konflikt.'},
+{e:'🔗',tag:'Begriffe zuordnen',t:'match',q:'Verbinde jeden Begriff mit der passenden Beschreibung.',terms:['Assimilation','Akkommodation','Äquilibration','Kognitiver Konflikt','Internalisierung'],descs:['Diskrepanz zwischen dem, was das Kind sieht, und dem, was es deutet','Neue Erfahrungen werden in vorhandene Schemata eingeordnet, die Strukturen bleiben bestehen','Handlungen, die zunächst konkret vollzogen wurden, werden zunehmend gedanklich nachvollzogen','Wiederherstellen des Gleichgewichts durch das Zusammenspiel zweier Anpassungsprozesse','Schemata werden verändert, erweitert oder neu gebildet'],ans:[1,4,3,0,2],x:'Richtig ist: Assimilation = B, Akkommodation = E, Äquilibration = D, kognitiver Konflikt = A, Internalisierung = C. Du bekommst den Punkt nur, wenn alle fünf stimmen.'},
+{e:'🧒',tag:'Bild vom Kind',q:'Welche Aussage passt zu Piagets Bild vom Kind?',o:['Das Kind ist ein aktiver Konstrukteur seiner Wirklichkeit: Es erkundet seine Umwelt und baut Erkenntnisse durch eigene Erfahrungen auf.','Das Kind ist ein leeres Gefäß, das durch Erklärungen von Erwachsenen Stück für Stück gefüllt wird.','Das Kind entwickelt sich allein aus inneren Anlagen, die Umwelt spielt kaum eine Rolle.'],c:0,x:'Kinder sind keine passiven Wissensempfänger. Die Umwelt bietet aber Anregungen, die bestehende Denkstrukturen herausfordern.'},
+{e:'🌊',tag:'Lernverständnis',q:'Ein Kind lernt, dass sich Wasser nicht mit geschlossener Hand schöpfen lässt und dafür ein neues Schema nötig ist. Was bedeutet Lernen für Piaget?',o:['Wissen wird vom Erwachsenen Schritt für Schritt vermittelt und vom Kind übernommen.','Das Kind ersetzt unpassende Vorstellungen aktiv durch neue, passende und baut dabei seine Denkstrukturen um.','Das Kind festigt sein vorhandenes Schema durch Wiederholung, bis es dieses perfekt beherrscht.'],c:1,x:'Lernen ist aktive Wissenskonstruktion und Rekonstruktion vorhandener Denkstrukturen. Wiederholung allein (c) wäre nur Assimilation.'},
+{e:'🚜',tag:'Rolle der Erziehenden',q:'Ein Kind nennt einen echten Bagger „Spielzeugbagger“ und hält auch nach der Erklärung der Eltern an seiner Vorstellung fest. Welches Verhalten der Eltern passt am besten zu „Beistand statt Belehrung“?',o:['Sie wiederholen geduldig die richtige Erklärung („Das ist eine Baumaschine!“), bis das Kind sie übernimmt.','Sie halten sich ganz heraus. Das Kind wird die Unterschiede irgendwann von selbst bemerken.','Sie geben Impulse: Gemeinsam vergleichen sie Spielzeug- und echten Bagger und fragen, was anders ist. So kann das Kind die Unterschiede selbst entdecken und sein Schema verändern.'],c:2,x:'Erziehende begleiten Lernprozesse, geben Impulse und ermöglichen eigenständiges Denken. Fehlen Anregungen (b), erschwert das die Entwicklung.'},
+{e:'👫',tag:'Soziale Interaktion',q:'Ein vierjähriges Kind ist noch egozentrisch. Wodurch wird die Überwindung des Egozentrismus nach Piaget möglich?',o:['Durch Erwachsene, die immer wieder sagen: „Denk doch auch an die anderen!“','Durch sozialen Austausch, durch Widerspruch und den Konflikt unterschiedlicher Ansichten sowie durch die Erfahrung unterschiedlicher Sichtweisen','Ganz automatisch mit zunehmendem Alter, unabhängig von den Erfahrungen des Kindes'],c:1,x:'Das Kind braucht Erfahrungen, in denen es merkt, dass andere etwas anderes sehen, wissen oder denken. Bleiben sie aus, kann die Überwindung des Egozentrismus erschwert werden.'},
+{e:'🧱',tag:'Assimilation ohne Akkommodation',q:'Ein Kind ordnet neue Erfahrungen immer wieder in sein bestehendes Schema ein („Spielzeugbagger“) und akkommodiert nicht ausreichend. Welche Folge ist am wahrscheinlichsten?',o:['Die Schemata bleiben unverändert. Neue Strukturen kommen nur durch Akkommodation hinzu, daher stagniert die kognitive Weiterentwicklung.','Das Kind lernt schneller, weil es weniger Fehler macht und seine Schemata nie in Frage gestellt werden.','Das Kind erreicht trotzdem ein Gleichgewicht auf höherem Niveau, weil Assimilation die Strukturen erweitert.'],c:0,x:'Beide Prozesse sind für kognitive Fortschritte notwendig. Ohne Akkommodation erkennt das Kind nicht, dass seine Erklärungsmuster nicht ausreichen, und es entstehen keine neuen Strukturen.'},
+{e:'🎚️',tag:'Schieberegler',t:'slider',q:'Das Kind mit dem „Spielzeugbagger“ soll eingeordnet werden: 0 = ausschließlich Assimilation, 100 = ausschließlich Akkommodation. Wo würdest du es einordnen?',x:'Richtig wäre ein Wert von 0 bis 15. Das Kind zeigt eine starke Tendenz zur Assimilation, eine notwendige Akkommodation findet zunächst nicht statt.'},
+{e:'🌀',tag:'Streben nach Gleichgewicht',q:'Wie beschreibt Piaget das Verhältnis von Gleichgewicht und Ungleichgewicht?',o:['Ungleichgewicht ist ein Zeichen für Fehlentwicklung. Ziel ist, dass das Kind dauerhaft im selben Gleichgewicht bleibt.','Assimilation sorgt für Gleichgewicht, Akkommodation für Ungleichgewicht, beide arbeiten gegeneinander.','Entwicklung ist eine Folge von Gleichgewichts- und Ungleichgewichtszuständen. Ein Ungleichgewicht wird durch ein Gleichgewicht auf höherem Niveau abgelöst, und das Wechselspiel von Assimilation und Akkommodation führt zu immer differenzierteren Strukturen („Spirale“).'],c:2,x:'Das Kind richtet seine Aufmerksamkeit auf das Ungleichgewicht und entwickelt neue, angepasste Schemata. Das Äquilibrationsprinzip erklärt, warum Kinder immer komplexere Strukturen aufbauen.'},
+{e:'🏉',tag:'Fallbeispiel: Der Ball',q:'Leonie (3) kennt Bälle: rund, man wirft sie, sie rollen. Im Park sieht sie einen eiförmigen Rugbyball und nennt ihn „Ball“. Er rollt und springt aber ganz unregelmäßig. Leonie runzelt die Stirn, probiert verschiedene Würfe aus und merkt: „Der Ball ist anders!“ Wie lässt sich der Verlauf beschreiben?',o:['Nur Assimilation, denn für Leonie bleibt alles ein „Ball“.','Zuerst Assimilation (Einordnung in das Ball-Schema), dann kognitiver Konflikt durch das unerwartete Verhalten, dann Akkommodation (Schema wird differenziert) und ein neues Gleichgewicht (Äquilibration)','Zuerst Akkommodation, weil Leonie ihr Schema ändert, danach Assimilation, weil sie es nur noch anwendet'],c:1,x:'Das Beispiel zeigt den ganzen Ablauf von Assimilation über kognitiven Konflikt und Akkommodation bis zur Äquilibration.'},
+{e:'🎨',tag:'Fallbeispiel: Die Kita',q:'Der vierjährige Tim hält sein Bild so hoch, dass nur er die bemalte Seite sieht: „Guck mal, mein Pferd!“ Mia sagt: „Ich sehe nichts.“ Tim antwortet verständnislos: „Doch, da ist doch ein Pferd!“ Welche Reaktion der Erzieherin passt am besten zu Piaget?',o:['Sie fragt beide Kinder: „Was siehst du, Mia? Und was siehst du, Tim? Woran könnte das liegen?“ So erleben die Kinder die Ansichten des anderen und kommen selbst darauf.','Sie sagt Tim sofort: „Dreh das Bild um, Mia kann es nicht sehen!“','Sie greift nicht ein, denn der Egozentrismus verschwindet mit der Zeit von allein.'],c:0,x:'Tim geht davon aus, dass der andere sieht, was er sieht (Egozentrismus). Überwunden wird er durch sozialen Austausch und den Widerspruch unterschiedlicher Ansichten, nicht durch Belehrung oder bloßes Abwarten.'},
+{e:'⚖️',tag:'Bonus: Die Baustellen-Jury',q:'Auf einer Baustelle beobachten drei Leute einen Jungen, der auf einen echten Bagger zeigt und „Spielzeugbagger!“ ruft. Seine Eltern haben ihm erklärt, dass das eine echte Baumaschine ist, aber er hält trotzdem an seiner Vorstellung fest. Einer der drei hat Piaget missverstanden. Wer?',o:['Baggerführerin Alina: „Der Junge ordnet den echten Bagger in sein Spielzeugbagger-Schema ein. Das gehört zum Lernen dazu, aber für Entwicklung braucht er auch Akkommodation.“','Polier Paul: „Das ist kein Problem. Wenn die Eltern ihm oft genug erklären, dass das ein echter Bagger ist, übernimmt er das Wissen und sein Schema ändert sich automatisch.“','Oma Gerda: „Er ändert sein Schema erst, wenn er Erfahrungen macht, die seine bisherige Vorstellung infrage stellen.“'],c:1,x:'Paul irrt: Kinder sind keine passiven Wissensempfänger, sie konstruieren Erkenntnisse durch eigene Erfahrungen. Eine bloße Erklärung ersetzt das nicht. Akkommodation entsteht, wenn ein kognitiver Konflikt zeigt, dass die Erklärungsmuster nicht ausreichen, etwa beim gemeinsamen Vergleich von Spielzeug- und echtem Bagger („Beistand statt Belehrung“). Alina und Gerda liegen richtig.'}
+];
+const N=Q.length,L='ABCDE';let i=0,score=0,player='';
+const $=id=>document.getElementById(id);
+function go(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('on'));$(id).classList.add('on');window.scrollTo(0,0)}
+
+// Intro: Bausteine stapeln sich (Schemata aufbauen)
+(function(){const cols=['#e8553d','#2f6fb5','#f2b632','#2e9e5b','#8a5cc2','#e8553d'],ch=['S','A','Ä','K','P','I'],pos=[[0,126],[68,126],[136,126],[34,60],[102,60],[68,-6]];
+ $('stack').innerHTML=pos.map((p,k)=>`<div class="blk" style="left:${p[0]}px;top:${p[1]}px;background:${cols[k]};animation-delay:${k*.35}s">${ch[k]}</div>`).join('')})();
+setTimeout(()=>{if($('intro').classList.contains('on'))$('intro').querySelector('.btn').focus()},3500);
+
+function startName(){const v=$('pname').value.trim();if(!v){$('pname').focus();return}player=v;go('piaget')}
+$('pname').addEventListener('keydown',e=>{if(e.key==='Enter')startName()});
+function startQuiz(){if(!player){go('name');return}i=0;score=0;show()}
+
+function show(){
+ const q=Q[i];go('quiz');
+ $('qn').textContent=(i+1)+'/'+N;$('pb').style.width=(i/N*100)+'%';$('pts').textContent='⭐ '+score;
+ let h=`<span class="qemoji">${q.e}</span><span class="tag">${q.tag}</span><h2 style="margin-top:10px;font-size:1.25rem">${q.q}</h2>`;
+ if(q.t==='match'){
+  h+=q.terms.map((t,k)=>`<div class="mrow" id="mr${k}"><b>${t}</b><select id="ms${k}"><option value="">Beschreibung wählen …</option>${q.descs.map((d,j)=>`<option value="${j}">${L[j]}) ${d}</option>`).join('')}</select></div>`).join('')+`<button class="btn" id="chk" onclick="checkMatch()">Prüfen</button>`;
+ }else if(q.t==='slider'){
+  h+=`<div class="val" id="sv">50</div><div class="sl"><input type="range" id="sr" min="0" max="100" value="50" oninput="$('sv').textContent=this.value"><div><span>0 · nur Assimilation</span><span>100 · nur Akkommodation</span></div></div><button class="btn" id="chk" onclick="checkSlider()">Prüfen</button>`;
+ }else{
+  h+=q.o.map((o,k)=>`<button class="opt" onclick="pick(${k})"><b>${L[k]})</b>${o}</button>`).join('');
+ }
+ h+=`<div id="fb"></div>`;
+ $('qcard').innerHTML=h;
+}
+function fin(ok){
+ if(ok)score++;$('pts').textContent='⭐ '+score;$('pb').style.width=((i+1)/N*100)+'%';
+ const last=i===N-1;
+ $('fb').innerHTML=`<div class="expl"><div class="verdict">${ok?'✅ Richtig! +1 Punkt':'❌ Leider nicht ganz.'}</div>${Q[i].x}</div><p style="text-align:right;margin-bottom:0"><button class="btn alt" onclick="next()">${last?'Zur Auswertung':'Weiter →'}</button></p>`;
+ $('fb').scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+function pick(k){
+ const q=Q[i],b=document.querySelectorAll('.opt');
+ b.forEach((el,j)=>{el.disabled=true;if(j===q.c)el.classList.add('ok');else if(j===k)el.classList.add('bad')});
+ fin(k===q.c);
+}
+function checkMatch(){
+ const q=Q[i];let all=true;
+ q.terms.forEach((_,k)=>{const s=$('ms'+k),ok=s.value!==''&&+s.value===q.ans[k];s.disabled=true;$('mr'+k).classList.add(ok?'ok':'bad');if(!ok){all=false;$('mr'+k).insertAdjacentHTML('beforeend',`<small style="grid-column:1/-1">Richtig: ${L[q.ans[k]]}) ${q.descs[q.ans[k]]}</small>`)}});
+ $('chk').remove();fin(all);
+}
+function checkSlider(){
+ const r=$('sr'),ok=+r.value<=15;r.disabled=true;$('sv').style.color=ok?'var(--ok)':'var(--bad)';$('chk').remove();fin(ok);
+}
+function next(){i++;i<N?show():result()}
+
+function submitScore(name,s){
+ // SPÄTER: Hier per fetch() an deinen Server senden und die Rangliste laden.
+ // z. B. await fetch('/api/scores',{method:'POST',body:JSON.stringify({name,s})});
+}
+function result(){
+ go('result');$('rscore').textContent=score+' / '+N;
+ const t=score>=14?['Piaget-Profi 🎓','Du denkst wie ein echter Konstruktivist: Dein Schema sitzt.']:score>=10?['Fast im Gleichgewicht ⚖️','Solide! Ein bisschen Akkommodation, dann passt alles.']:score>=6?['Mitten im Konflikt 🌀','Dein Schema wackelt noch. Genau da entsteht Lernen.']:['Frisch im Ungleichgewicht 🧱','Kein Problem: Jetzt kannst du dein Wissen neu aufbauen.'];
+ $('rtitle').textContent=t[0];$('rtext').textContent=t[1];
+ $('lbtable').innerHTML=`<tr><th>#</th><th>Name</th><th>Punkte</th></tr><tr class="me"><td>–</td><td>${player.replace(/[<>&]/g,'')} (du)</td><td>${score}</td></tr>`;
+ submitScore(player,score);
+}
+</script>
+</body>
+</html>
