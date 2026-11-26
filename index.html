@@ -55,6 +55,14 @@ select{font:inherit;width:100%;padding:8px;border-radius:8px;border:2px solid va
 .score{font:700 4rem Georgia,serif;text-align:center;color:var(--a)}
 table{width:100%;border-collapse:collapse}td,th{padding:8px;border-bottom:1px solid var(--line);text-align:left}
 .me td{font-weight:700;background:var(--okbg)}
+.stars{display:flex;flex-wrap:wrap;gap:2px;margin:2px 0 14px}
+.stars button{font-size:1.7rem;line-height:1;background:none;border:0;padding:2px 3px;cursor:pointer;color:#cfc3a5;transition:transform .1s}
+.stars button:hover{transform:scale(1.25)}.stars button.on{color:var(--c);text-shadow:0 0 0 var(--ink),1px 1px 0 var(--ink)}
+.rl{display:flex;justify-content:space-between;font-weight:700;margin-top:10px}
+textarea{font:inherit;width:100%;min-height:90px;padding:12px 14px;border:2px solid var(--ink);border-radius:12px;background:#fff;color:#2b2a33;resize:vertical;margin-bottom:8px}
+.err{color:var(--bad);min-height:1.4em;font-weight:700;margin-bottom:8px}
+.rank{text-align:center;font-weight:700;font-size:1.1rem;margin:12px 0}
+.btns{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
 </style>
 </head>
 <body>
@@ -83,7 +91,7 @@ table{width:100%;border-collapse:collapse}td,th{padding:8px;border-bottom:1px so
   <div class="card">
     <span class="tag">Kurz vorgestellt</span>
     <h2 style="margin-top:10px">Jean Piaget (1896–1980)</h2>
-    <div class="imgph" id="portrait"><img src="https://www1.wdr.de/stichtag/stichtag_august116~_v-gseapremiumxl.jpg" alt="Bild kann gerade nicht geladen werden!!"><p>Bildquelle: WDR<p/></small></div>
+    <div class="imgph" id="portrait"><div><img src="https://www1.wdr.de/stichtag/stichtag_august116~_v-gseapremiumxl.jpg" alt="Bild kann gerade nicht geladen werden!!"><br><small>Bildquelle: WDR</small></div></div>
     <p>Der Schweizer Psychologe erforschte, wie Kinder ihr Denken aufbauen. Sein Kerngedanke: Kinder sind <b>aktive Konstrukteure</b> ihrer Wirklichkeit. Sie lernen, indem sie handeln, ausprobieren und ihre Vorstellungen immer wieder umbauen.</p>
     <p>Gleich testest du, ob dein eigenes Schema dafür schon sitzt. 15 Fragen, 15 Punkte. 🧠</p>
     <button class="btn" onclick="startQuiz()">Quiz starten</button>
@@ -96,6 +104,20 @@ table{width:100%;border-collapse:collapse}td,th{padding:8px;border-bottom:1px so
   <div class="card" id="qcard"></div>
 </section>
 
+<!-- FEEDBACK -->
+<section id="feedback" class="screen">
+  <div class="card">
+    <span class="tag">Feedback</span>
+    <h2 style="margin-top:10px">Wie fandest du das Quiz?</h2>
+    <p style="color:var(--mute)">Bevor dein Ergebnis kommt: Bitte bewerte beides und schreib einen kurzen Kommentar. Alles ist Pflicht.</p>
+    <div class="rl"><span>📚 Inhalt</span><span id="scv">–</span></div><div class="stars" id="sc"></div>
+    <div class="rl"><span>🎨 Design &amp; Bedienung</span><span id="sdv">–</span></div><div class="stars" id="sd"></div>
+    <textarea id="fcom" maxlength="1000" placeholder="Dein Kommentar …"></textarea>
+    <div class="err" id="ferr"></div>
+    <button class="btn" id="fsend" onclick="sendFeedback()">Absenden &amp; Ergebnis zeigen</button>
+  </div>
+</section>
+
 <!-- RESULT -->
 <section id="result" class="screen">
   <div class="card">
@@ -103,14 +125,16 @@ table{width:100%;border-collapse:collapse}td,th{padding:8px;border-bottom:1px so
     <div class="score" id="rscore"></div>
     <h2 id="rtitle" style="text-align:center"></h2>
     <p id="rtext" style="text-align:center;color:var(--mute)"></p>
-    <h3 style="margin-top:22px">🏆 Rangliste</h3>
+    <h3 style="margin-top:22px">🏆 Die Top 5</h3>
     <div id="leaderboard">
-      <!-- SPÄTER: Online-Rangliste hier einbinden (Server-Anbindung).
-           Die Funktion submitScore(name, score) in der JS-Datei ist dafür vorbereitet. -->
       <table id="lbtable"></table>
-      <p class="legend">Der Online-Vergleich mit anderen Spielern folgt. Bis dahin siehst du nur dein Ergebnis.</p>
+      <div class="rank" id="myrank"></div>
+      <p class="legend" id="lbnote"></p>
     </div>
-    <button class="btn" onclick="startQuiz()">Nochmal spielen 🔁</button>
+    <div class="btns">
+      <button class="btn alt" onclick="loadBoard()">🔄 Rangliste aktualisieren</button>
+      <button class="btn" onclick="startQuiz()">Nochmal spielen 🔁</button>
+    </div>
   </div>
 </section>
 
@@ -178,19 +202,77 @@ function checkMatch(){
 function checkSlider(){
  const r=$('sr'),ok=+r.value<=15;r.disabled=true;$('sv').style.color=ok?'var(--ok)':'var(--bad)';$('chk').remove();fin(ok);
 }
-function next(){i++;i<N?show():result()}
+function next(){i++;i<N?show():(fbDone?result():(go('feedback')))}
 
-function submitScore(name,s){
- // SPÄTER: Hier per fetch() an deinen Server senden und die Rangliste laden.
- // z. B. await fetch('/api/scores',{method:'POST',body:JSON.stringify({name,s})});
+let fbDone=false,rS={sc:0,sd:0};
+const esc=t=>String(t).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+['sc','sd'].forEach(id=>{$(id).innerHTML=Array.from({length:10},(_,k)=>`<button type="button" aria-label="${k+1} Sterne" onclick="rate('${id}',${k+1})">★</button>`).join('')});
+function rate(id,v){rS[id]=v;[...$(id).children].forEach((b,k)=>b.classList.toggle('on',k<v));$(id+'v').textContent=v+' / 10'}
+async function sendFeedback(){
+ const cm=$('fcom').value.trim(),err=$('ferr'),b=$('fsend');
+ if(!rS.sc||!rS.sd||!cm){err.textContent='Bitte beide Bewertungen anklicken und einen Kommentar schreiben.';return}
+ err.textContent='';b.disabled=true;b.textContent='Wird gesendet …';
+ try{
+  if(window.fbApi)await window.fbApi.save({name:player,points:score,content:rS.sc,design:rS.sd,comment:cm});
+  fbDone=true;b.disabled=false;b.textContent='Absenden & Ergebnis zeigen';result();
+ }catch(e){console.error(e);err.textContent='Senden hat nicht geklappt. Bitte versuche es nochmal.';b.disabled=false;b.textContent='Absenden & Ergebnis zeigen'}
+}
+async function loadBoard(){
+ const t=$('lbtable'),r=$('myrank'),n=$('lbnote');
+ t.innerHTML='<tr><td>Rangliste wird geladen …</td></tr>';r.textContent='';n.textContent='';
+ try{
+  if(!window.fbApi||!window.fbApi.ok)throw new Error('nofb');
+  const [top,rank]=await Promise.all([window.fbApi.top(),window.fbApi.rank(score)]);
+  t.innerHTML='<tr><th>#</th><th>Name</th><th>Punkte</th></tr>'+top.map((p,k)=>`<tr><td>${k+1}</td><td>${esc(p.name)}</td><td>${p.points}</td></tr>`).join('');
+  r.textContent=`Dein Platz: ${rank} (${score} Punkte)`;
+ }catch(e){
+  t.innerHTML=`<tr class="me"><td>–</td><td>${esc(player)} (du)</td><td>${score}</td></tr>`;
+  n.textContent=(e.message==='nofb')?'Die Online-Rangliste ist noch nicht verbunden (Firebase-Zugangsdaten fehlen).':'Die Rangliste konnte nicht geladen werden. Probiere „Aktualisieren“.';
+ }
 }
 function result(){
  go('result');$('rscore').textContent=score+' / '+N;
  const t=score>=14?['Piaget-Profi 🎓','Du denkst wie ein echter Konstruktivist: Dein Schema sitzt.']:score>=10?['Fast im Gleichgewicht ⚖️','Solide! Ein bisschen Akkommodation, dann passt alles.']:score>=6?['Mitten im Konflikt 🌀','Dein Schema wackelt noch. Genau da entsteht Lernen.']:['Frisch im Ungleichgewicht 🧱','Kein Problem: Jetzt kannst du dein Wissen neu aufbauen.'];
  $('rtitle').textContent=t[0];$('rtext').textContent=t[1];
- $('lbtable').innerHTML=`<tr><th>#</th><th>Name</th><th>Punkte</th></tr><tr class="me"><td>–</td><td>${player.replace(/[<>&]/g,'')} (du)</td><td>${score}</td></tr>`;
- submitScore(player,score);
+ loadBoard();
 }
+</script>
+<script type="module">
+/* FIREBASE: Trage hier die Werte aus Firebase (Projekteinstellungen → Web-App) ein.
+   Firestore-Regeln (Firebase Console → Firestore → Regeln):
+
+   rules_version = '2';
+   service cloud.firestore { match /databases/{db}/documents {
+     match /scores/{id} {
+       allow read: if true;
+       allow create: if request.resource.data.keys().hasOnly(['name','points','createdAt'])
+         && request.resource.data.name is string && request.resource.data.name.size() > 0 && request.resource.data.name.size() <= 20
+         && request.resource.data.points is int && request.resource.data.points >= 0 && request.resource.data.points <= 15;
+       allow update, delete: if false;
+     }
+     match /feedback/{id} {
+       allow read, update, delete: if false;   // nur du siehst es in der Console
+       allow create: if request.resource.data.keys().hasOnly(['scoreId','name','points','content','design','comment','createdAt'])
+         && request.resource.data.content is int && request.resource.data.content >= 1 && request.resource.data.content <= 10
+         && request.resource.data.design is int && request.resource.data.design >= 1 && request.resource.data.design <= 10
+         && request.resource.data.comment is string && request.resource.data.comment.size() > 0 && request.resource.data.comment.size() <= 1000;
+     }
+   }}
+*/
+import {initializeApp} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import {getFirestore,collection,addDoc,getDocs,query,orderBy,limit,where,getCountFromServer,serverTimestamp} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+const cfg={apiKey:"DEIN_API_KEY",authDomain:"DEIN_PROJEKT.firebaseapp.com",projectId:"DEIN_PROJEKT_ID",storageBucket:"DEIN_PROJEKT.appspot.com",messagingSenderId:"DEINE_SENDER_ID",appId:"DEINE_APP_ID"};
+const ok=!cfg.apiKey.startsWith("DEIN");
+const db=ok?getFirestore(initializeApp(cfg)):null;
+window.fbApi={ok,
+ async save(d){
+  if(!ok)return;
+  const ref=await addDoc(collection(db,'scores'),{name:d.name,points:d.points,createdAt:serverTimestamp()});
+  await addDoc(collection(db,'feedback'),{scoreId:ref.id,name:d.name,points:d.points,content:d.content,design:d.design,comment:d.comment,createdAt:serverTimestamp()});
+ },
+ async top(){const s=await getDocs(query(collection(db,'scores'),orderBy('points','desc'),limit(5)));return s.docs.map(x=>x.data())},
+ async rank(p){const c=await getCountFromServer(query(collection(db,'scores'),where('points','>',p)));return c.data().count+1}
+};
 </script>
 </body>
 </html>
